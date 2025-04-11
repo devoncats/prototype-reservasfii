@@ -16,6 +16,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  bookings      Booking[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -58,4 +59,94 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+enum BookingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+enum MajorCategory {
+  UNDERGRADUATE
+  POSTGRADUATE
+  MASTERS
+  DOCTORATE
+}
+
+model Laboratory {
+  id      String    @id
+  name    String
+  Booking Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Responsible {
+  id       Int       @id @default(autoincrement())
+  name     String
+  email    String?   @unique
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Course {
+  id       Int       @id @default(autoincrement())
+  name     String
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Major {
+  id       Int           @id @default(autoincrement())
+  name     String
+  category MajorCategory @default(UNDERGRADUATE)
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Faculty {
+  id       Int       @id @default(autoincrement())
+  name     String
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Booking {
+  id      Int           @id @default(autoincrement())
+  start   DateTime
+  end     DateTime
+  status  BookingStatus @default(PENDING)
+  comment String?
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  laboratoryId String
+  laboratory   Laboratory @relation(fields: [laboratoryId], references: [id], onDelete: Cascade)
+
+  responsibleId Int
+  responsible   Responsible @relation(fields: [responsibleId], references: [id], onDelete: Cascade)
+
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  majorId Int
+  major   Major @relation(fields: [majorId], references: [id], onDelete: Cascade)
+
+  facultyId Int
+  faculty   Faculty @relation(fields: [facultyId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
