@@ -1,35 +1,14 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { createApiHandlers } from "@/lib/api/handler";
+import { Laboratory } from "@prisma/client";
 
-export async function POST(req: NextRequest) {
-  try {
-    const { id, name } = await req.json();
+type LaboratoryCreate = {
+  name: string;
+};
 
-    const laboratory = await prisma.laboratory.create({
-      data: {
-        id,
-        name,
-      },
-    });
+const laboratoryHandler = createApiHandlers<Laboratory, LaboratoryCreate>({
+  model: "laboratory",
+  parseId: (id) => id,
+});
 
-    return NextResponse.json(laboratory, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Error creating laboratory", details: error },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET() {
-  try {
-    const laboratories = await prisma.laboratory.findMany();
-
-    return NextResponse.json(laboratories, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Error fetching laboratories", details: error },
-      { status: 500 }
-    );
-  }
-}
+export const GET = laboratoryHandler.findAllEntities;
+export const POST = laboratoryHandler.createEntity;

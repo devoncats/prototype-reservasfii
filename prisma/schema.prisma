@@ -123,11 +123,11 @@ model Faculty {
 }
 
 model Booking {
-  id      Int           @id @default(autoincrement())
-  start   DateTime
-  end     DateTime
-  status  BookingStatus @default(PENDING)
-  comment String?
+  id        Int           @id @default(autoincrement())
+  startTime DateTime
+  endTime   DateTime
+  status    BookingStatus @default(PENDING)
+  comment   String?
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

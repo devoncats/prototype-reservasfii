@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Logo({ size = "large" }: { size?: "small" | "large" }) {
+export function Logo({ size = "large" }: { size?: "small" | "large" }) {
   const sizes = {
     small: { width: 40, height: 50, fontSize: "text-sm" },
     large: { width: 68, height: 85, fontSize: "text-lg" },
@@ -15,6 +15,7 @@ export default function Logo({ size = "large" }: { size?: "small" | "large" }) {
         alt="Logo"
         width={sizes[size].width}
         height={sizes[size].height}
+        priority
       />
       <h1
         className={cn(

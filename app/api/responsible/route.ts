@@ -1,35 +1,13 @@
-import { prisma } from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { createApiHandlers } from "@/lib/api/handler";
+import { Responsible } from "@prisma/client";
 
-export async function POST(req: NextRequest) {
-  try {
-    const { name, email } = await req.json();
+type ResponsibleCreate = {
+  name: string;
+};
 
-    const responsible = await prisma.responsible.create({
-      data: {
-        name,
-        email,
-      },
-    });
+const responsibleHandler = createApiHandlers<Responsible, ResponsibleCreate>({
+  model: "responsible",
+});
 
-    return NextResponse.json(responsible, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Error creating responsible", details: error },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET() {
-  try {
-    const responsibles = await prisma.responsible.findMany();
-
-    return NextResponse.json(responsibles, { status: 200 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Error fetching responsibles", details: error },
-      { status: 500 }
-    );
-  }
-}
+export const GET = responsibleHandler.findAllEntities;
+export const POST = responsibleHandler.createEntity;
